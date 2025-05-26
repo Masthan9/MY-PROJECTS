@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Interactive Web Dev Quiz</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 700px;
+    margin: 40px auto;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+  }
+  .quiz-container {
+    background: #2c2c54;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: inset 0 0 20px rgba(255,255,255,0.05);
+  }
+  .question {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+  .options button {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 14px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #4a69bd;
+    color: white;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+  }
+  .options button:hover {
+    background: #6a89cc;
+  }
+  .options button.correct {
+    background-color: #27ae60 !important;
+    box-shadow: 0 0 15px #27ae60;
+    cursor: default;
+  }
+  .options button.wrong {
+    background-color: #c0392b !important;
+    box-shadow: 0 0 15px #c0392b;
+    cursor: default;
+  }
+  .score {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-top: 25px;
+    font-weight: 700;
+  }
+  .next-btn {
+    margin-top: 25px;
+    padding: 12px 30px;
+    font-size: 1.2rem;
+    background: #ff4757;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: none;
+    font-weight: 600;
+    box-shadow: 0 5px 12px rgba(255,71,87,0.6);
+    transition: background-color 0.3s ease;
+  }
+  .next-btn:hover {
+    background: #ff6b81;
+  }
+  .progress {
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #dcdde1;
+  }
+</style>
+</head>
+<body>
+
+<h1>Interactive Web Dev Quiz</h1>
+
+<div class="quiz-container">
+  <div class="progress" id="progress">Question 1 of 30</div>
+  <div class="question" id="question">Question text</div>
+  <div class="options" id="options"></div>
+  <button class="next-btn" id="nextBtn">Next</button>
+  <div class="score" id="score"></div>
+</div>
+
+<script>
+  const quizData = [
+    { question: "What does HTML stand for?", options: ["HyperText Markup Language", "Home Tool Markup Language", "Hyperlinks and Text Markup Language", "Hyperlinking Text Marking Language"], answer: "HyperText Markup Language" },
+    { question: "Which HTML tag is used to create a link?", options: ["<a>", "<link>", "<href>", "<url>"], answer: "<a>" },
+    { question: "Which property is used to change the background color in CSS?", options: ["bgcolor", "background-color", "color", "background"], answer: "background-color" },
+    { question: "How do you insert a comment in a CSS file?", options: ["// this is a comment", "/* this is a comment */", "' this is a comment", "<!-- this is a comment -->"], answer: "/* this is a comment */" },
+    { question: "Which is the correct CSS syntax?", options: ["body {color: black;}", "{body;color:black;}", "body:color=black;", "{body:color=black;}"], answer: "body {color: black;}" },
+    { question: "Inside which HTML element do we put the JavaScript?", options: ["<script>", "<js>", "<javascript>", "<scripting>"], answer: "<script>" },
+    { question: "Which symbol is used for comments in JavaScript?", options: ["<!-- -->", "//", "/* */", "Both // and /* */"], answer: "Both // and /* */" },
+    { question: "How do you create a function in JavaScript?", options: ["function = myFunction()", "function myFunction()", "function:myFunction()", "create function myFunction()"], answer: "function myFunction()" },
+    { question: "How do you call a function named 'myFunction'?", options: ["call function myFunction()", "call myFunction()", "myFunction()", "Call.myFunction()"], answer: "myFunction()" },
+    { question: "How to write an IF statement in JavaScript?", options: ["if i = 5 then", "if i == 5 then", "if (i == 5)", "if i = 5"], answer: "if (i == 5)" },
+    { question: "Which event occurs when the user clicks on an HTML element?", options: ["onclick", "onchange", "onmouseover", "onmouseclick"], answer: "onclick" },
+    { question: "Which operator is used to assign a value to a variable?", options: ["=", "-", "==", "*"], answer: "=" },
+    { question: "Which of the following is NOT a JavaScript data type?", options: ["Number", "String", "Boolean", "Character"], answer: "Character" },
+    { question: "How do you round the number 7.25 to the nearest integer in JavaScript?", options: ["Math.round(7.25)", "round(7.25)", "Math.rnd(7.25)", "rnd(7.25)"], answer: "Math.round(7.25)" },
+    { question: "Which CSS property controls the text size?", options: ["font-style", "text-size", "font-size", "text-style"], answer: "font-size" },
+    { question: "What does CSS stand for?", options: ["Creative Style Sheets", "Colorful Style Sheets", "Cascading Style Sheets", "Computer Style Sheets"], answer: "Cascading Style Sheets" },
+    { question: "In CSS, how do you select an element with id 'demo'?", options: ["#demo", ".demo", "demo", "*demo"], answer: "#demo" },
+    { question: "What is the correct HTML element for inserting a line break?", options: ["<break>", "<lb>", "<br>", "<line>"], answer: "<br>" },
+    { question: "How do you make a numbered list in HTML?", options: ["<ul>", "<ol>", "<list>", "<dl>"], answer: "<ol>" },
+    { question: "Which HTML attribute is used to define inline styles?", options: ["style", "class", "styles", "font"], answer: "style" },
+    { question: "Which property is used to change the font of an element in CSS?", options: ["font-weight", "font-style", "font-family", "text-style"], answer: "font-family" },
+    { question: "What will this JavaScript output: console.log(typeof NaN);", options: ["number", "NaN", "undefined", "object"], answer: "number" },
+    { question: "Which HTML attribute is used to specify that an input field must be filled out?", options: ["required", "validate", "placeholder", "formvalidate"], answer: "required" },
+    { question: "How do you write 'Hello World' in an alert box in JavaScript?", options: ["alertBox('Hello World');", "msg('Hello World');", "alert('Hello World');", "msgBox('Hello World');"], answer: "alert('Hello World');" },
+    { question: "How do you add a comment in HTML?", options: ["// this is a comment", "<!-- this is a comment -->", "' this is a comment", "/* this is a comment */"], answer: "<!-- this is a comment -->" },
+    { question: "How can you add a background color in HTML?", options: ["<body bg='yellow'>", "<body style='background-color:yellow;'>", "<background>yellow</background>", "<body background='yellow'>"], answer: "<body style='background-color:yellow;'>" },
+    { question: "What is the correct way to write a JavaScript array?", options: ["var colors = 1 = ('red', 'green', 'blue')", "var colors = ['red', 'green', 'blue']", "var colors = 'red', 'green', 'blue'", "var colors = (1:'red', 2:'green', 3:'blue')"], answer: "var colors = ['red', 'green', 'blue']" },
+    { question: "Which HTML element defines the title of a document?", options: ["<meta>", "<title>", "<head>", "<header>"], answer: "<title>" },
+    { question: "Which CSS property is used to change the text color of an element?", options: ["color", "text-color", "font-color", "fgcolor"], answer: "color" },
+    { question: "How do you declare a JavaScript variable?", options: ["v carName;", "variable carName;", "var carName;", "carName;"], answer: "var carName;" }
+  ];
+
+  const questionEl = document.getElementById('question');
+  const optionsEl = document.getElementById('options');
+  const nextBtn = document.getElementById('nextBtn');
+  const scoreEl = document.getElementById('score');
+  const progressEl = document.getElementById('progress');
+
+  let currentIndex = 0;
+  let score = 0;
+  let answered = false;
+
+  function loadQuestion() {
+    answered = false;
+    scoreEl.textContent = '';
+    nextBtn.style.display = 'none';
+    const currentQ = quizData[currentIndex];
+    progressEl.textContent = `Question ${currentIndex + 1} of ${quizData.length}`;
+    questionEl.textContent = currentQ.question;
+    optionsEl.innerHTML = '';
+    currentQ.options.forEach(option => {
+      const btn = document.createElement('button');
+      btn.textContent = option;
+      btn.addEventListener('click', () => selectOption(btn, currentQ.answer));
+      optionsEl.appendChild(btn);
+    });
+  }
+
+  function selectOption(selectedBtn, correctAnswer) {
+    if (answered) return; // prevent multiple clicks
+    answered = true;
+
+    const buttons = optionsEl.querySelectorAll('button');
+    buttons.forEach(btn => {
+      btn.disabled = true;
+      if (btn.textContent === correctAnswer) {
+        btn.classList.add('correct');
+      }
+    });
+
+    if (selectedBtn.textContent === correctAnswer) {
+      score++;
+      scoreEl.textContent = 'Correct!';
+      selectedBtn.classList.add('correct');
+    } else {
+      scoreEl.textContent = 'Wrong!';
+      selectedBtn.classList.add('wrong');
+    }
+    nextBtn.style.display = 'inline-block';
+  }
+
+  nextBtn.addEventListener('click', () => {
+    currentIndex++;
+    if (currentIndex < quizData.length) {
+      loadQuestion();
+    } else {
+      showResults();
+    }
+  });
+
+  function showResults() {
+    questionEl.textContent = `Quiz completed! Your score: ${score} out of ${quizData.length}`;
+    optionsEl.innerHTML = '';
+    nextBtn.style.display = 'none';
+    progressEl.textContent = '';
+    scoreEl.textContent = '';
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>
